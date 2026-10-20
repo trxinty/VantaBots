@@ -1,1 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanta - Blox League & Turbo Soccer Bots</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --accent-color: #00f0ff;
+            --accent-hover: #00c2cc;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .logo-icon {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 900;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--text-main);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+
+        .btn-buy {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-buy:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Hero / Home Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-left h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-left p {
+            color: var(--text-muted);
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Video / Clip Player Box */
+        .video-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .video-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .video-header-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge-fps {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--accent-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-sub {
+            background: var(--border-color);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .pricing-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent-color);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .pricing-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .pricing-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+            min-height: 40px;
+        }
+
+        .pricing-price {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            color: var(--text-main);
+        }
+
+        .pricing-btn {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: auto;
+        }
+
+        /* Binds & Setup Section */
+        .binds-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .binds-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .binds-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .binds-header p {
+            color: var(--text-muted);
+        }
+
+        .binds-table {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bind-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .bind-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .bind-key {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .bind-section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin: 20px 0 10px 5px;
+            font-weight: 700;
+        }
+
+        .fps-notice {
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            color: #ffaa00;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 50px;
+            background: var(--bg-color);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .footer-brand {
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-main);
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            header {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <a href="#" class="logo-container" onclick="switchTab('home')">
+            <div class="logo-icon">⚡</div>
+            <span>VANTA</span>
+        </a>
+        <nav>
+            <a onclick="switchTab('home')" id="nav-home" class="active">Home</a>
+            <a onclick="switchTab('products')" id="nav-products">Our Prices</a>
+            <a onclick="switchTab('bots')" id="nav-bots">Bot Information</a>
+            <a onclick="switchTab('binds')" id="nav-binds">Setup & Binds</a>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                WORK IN PROGRESS
+            </div>
+        </nav>
+        <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="btn-buy">Join Discord</a>
+    </header>
+
+    <!-- Content Area -->
+    <div class="container">
+
+        <!-- HOME TAB -->
+        <div id="tab-home" class="tab-content active">
+            <div class="hero">
+                <div class="hero-left">
+                    <h1>Meet your next main.</h1>
+                    <p>Blox League & Turbo Soccer bots, different playstyles, and one familiar menu.</p>
+                    <div class="hero-buttons">
+                        <a onclick="switchTab('products')" class="btn-primary">Explore Pricing</a>
+                        <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="btn-secondary">Join Discord</a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="video-box">
+                        <div class="video-header">
+                            <div class="video-header-left">
+                                <div class="status-dot"></div>
+                                <span>VANTA IN ACTION</span>
+                            </div>
+                            <div class="video-header-right">
+                                <span class="badge-fps">120 FPS</span>
+                                <span class="badge-sub">60 / 120</span>
+                            </div>
+                        </div>
+                        <div class="video-container">
+                            <iframe src="https://www.youtube-nocookie.com/embed/G14SZmtCVuo?autoplay=1&mute=1&loop=1&playlist=G14SZmtCVuo" title="Vanta Bot Training Footage" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        <div class="video-footer">
+                            <span>Blox League & Turbo Soccer</span>
+                            <span>Raw Training Footage</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCTS / OUR PRICES TAB -->
+        <div id="tab-products" class="tab-content">
+            <div class="binds-header">
+                <h2>Vanta Access Keys</h2>
+                <p>Pick your access level. Choose the duration below.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-title">3 Day Key</div>
+                    <div class="pricing-desc">Short-term access to all core features and training models.</div>
+                    <div class="pricing-price">$8</div>
+                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 3 Days</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-title">1 Week Key</div>
+                    <div class="pricing-desc">Standard weekly pass for active players and grinders.</div>
+                    <div class="pricing-price">$15</div>
+                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 1 Week</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-title">2 Week Key</div>
+                    <div class="pricing-desc">Extended access for competitive climbing and full testing.</div>
+                    <div class="pricing-price">$20</div>
+                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 2 Weeks</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Popular</div>
+                    <div class="pricing-title">1 Month Key</div>
+                    <div class="pricing-desc">Full monthly access with priority updates and support.</div>
+                    <div class="pricing-price">$30</div>
+                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 1 Month</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-title">3 Month Key</div>
+                    <div class="pricing-desc">Season pass for dedicated competitors wanting long-term dominance.</div>
+                    <div class="pricing-price">$70</div>
+                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 3 Months</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOT INFORMATION TAB -->
+        <div id="tab-bots" class="tab-content">
+            <div class="binds-header">
+                <h2>Bot Information</h2>
+                <p>Detailed breakdown of model parameters and specialized agent training steps.</p>
+            </div>
+            <div class="pricing-card" style="text-align: center; padding: 60px 20px; max-width: 600px; margin: 40px auto;">
+                <div class="status-badge" style="justify-content: center; margin: 0 auto 20px auto; width: fit-content;">WORK IN PROGRESS</div>
+                <h3 style="font-size: 24px; margin-bottom: 10px;">No Bots Ready Yet</h3>
+                <p style="color: var(--text-muted);">We are currently compiling model breakdowns and specifications. Check back soon!</p>
+            </div>
+        </div>
+
+        <!-- SETUP & BINDS TAB -->
+        <div id="tab-binds" class="tab-content">
+            <div class="binds-container">
+                <div class="binds-header">
+                    <h2>Custom Controls & Binds</h2>
+                    <p>Configure your keybinds to ensure smooth bot execution and precise physics reads.</p>
+                </div>
+
+                <div class="binds-table">
+                    <div class="bind-section-title">Core Controls</div>
+                    <div class="bind-row">
+                        <span class="bind-name">Steering Left</span>
+                        <span class="bind-key">A</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Steering Right</span>
+                        <span class="bind-key">D</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Jump</span>
+                        <span class="bind-key">Right Click</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Boost</span>
+                        <span class="bind-key">Left Click</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Powerslide</span>
+                        <span class="bind-key">Left Shift</span>
+                    </div>
+
+                    <div class="bind-section-title">Pitch & Movement</div>
+                    <div class="bind-row">
+                        <span class="bind-name">Pitch Up / Nose Up</span>
+                        <span class="bind-key">I</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Pitch Down / Nose Down</span>
+                        <span class="bind-key">K</span>
+                    </div>
+
+                    <div class="bind-section-title">Blox League Exclusive</div>
+                    <div class="bind-row">
+                        <span class="bind-name">Air Yaw Left</span>
+                        <span class="bind-key">A</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Air Yaw Right</span>
+                        <span class="bind-key">D</span>
+                    </div>
+
+                    <div class="bind-section-title">Air Roll & Rotation</div>
+                    <div class="bind-row">
+                        <span class="bind-name">Air Roll Left</span>
+                        <span class="bind-key">Q</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Air Roll Right</span>
+                        <span class="bind-key">E</span>
+                    </div>
+                    <div class="bind-row">
+                        <span class="bind-name">Free Air Roll</span>
+                        <span class="bind-key">F</span>
+                    </div>
+                </div>
+
+                <div class="fps-notice">
+                    ⚠️ IMPORTANT: Must have 120 FPS target (60 FPS minimum fallback). Inconsistent frame rates interfere with bot physics reads.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-brand">
+                    <div class="logo-icon" style="width: 24px; height: 24px; font-size: 14px;">⚡</div>
+                    VANTA
+                </div>
+                <span>Blox league & turbo soccer bots, different play styles and one familiar menu.</span>
+            </div>
+            <div class="footer-links">
+                <a href="https://discord.gg/sjfd7NqU4N" target="_blank">Discord</a>
+                <a onclick="switchTab('products')">Pricing</a>
+                <a onclick="switchTab('binds')">Setup & Binds</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav a[id^="nav-"]').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            const navEl = document.getElementById('nav-' + tabId);
+            if(navEl) navEl.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
