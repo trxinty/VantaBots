@@ -65,7 +65,8 @@ header{
 .links{display:flex;align-items:center;gap:22px;font-size:12px;font-weight:500;color:#cbc5d1}
 .links a{transition:color .15s}
 .links a:hover,.links a.active{color:#fff}
-.working{display:inline-flex;align-items:center;gap:6px;color:var(--green);font-weight:700;font-size:11px;letter-spacing:.02em}
+.working{display:inline-flex;align-items:center;gap:6px;color:var(--amber);white-space:nowrap;font-weight:700;font-size:11px;letter-spacing:.02em}
+.working .dot{background:var(--amber);box-shadow:0 0 8px var(--amber)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
 .btn-buy{
   background:var(--cyan);color:#2a0a16;font-weight:700;font-size:11.5px;
@@ -467,7 +468,7 @@ body.modal-open{overflow:hidden}
       <a href="#products" data-nav="products">Products</a>
       <a href="#bots" data-nav="bots">Bots</a>
       <a href="#setup" data-nav="setup">Setup</a>
-      <a href="#status" class="working" data-nav="status"><span class="dot"></span>WORKING</a>
+      <a href="#status" class="working" data-nav="status"><span class="dot"></span>WORK IN PROGRESS</a>
     </nav>
     <a href="https://discord.gg/ArnHTha6yW" class="btn-buy" data-discord target="_blank" rel="noopener">Buy Now</a>
     <button class="burger" id="burger" aria-label="Menu"><span></span></button>
@@ -677,10 +678,10 @@ body.modal-open{overflow:hidden}
   <div class="wrap">
     <div style="padding-top:64px">
       <div class="eyebrow">Status</div>
-      <h1 class="big" style="font-size:36px;margin-top:16px">Everything is working.</h1>
-      <p class="sub" style="font-size:11px">Vanta is online right now.</p>
+      <h1 class="big" style="font-size:36px;margin-top:16px">Work in progress.</h1>
+      <p class="sub" style="font-size:11px">Vanta is currently a work in progress.</p>
     </div>
-    <div class="card" style="padding:16px;max-width:260px;margin-top:30px"><div class="eyebrow">Vanta</div><p style="margin-top:12px;display:flex;align-items:center;gap:8px;color:var(--green);font-weight:700;font-size:12px"><span class="dot"></span>WORKING</p></div>
+    <div class="card" style="padding:16px;max-width:260px;margin-top:30px"><div class="eyebrow">Vanta</div><p style="margin-top:12px;display:flex;align-items:center;gap:8px;color:var(--amber);font-weight:700;font-size:12px"><span class="dot" style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></span>WORK IN PROGRESS</p></div>
   </div>
 </section>
 
