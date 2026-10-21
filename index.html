@@ -1,682 +1,904 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanta - Blox League & Turbo Soccer Bots</title>
-    <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131b2e;
-            --accent-color: #00f0ff;
-            --accent-hover: #00c2cc;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --border-color: #1e293b;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vanta – Rocket League bots</title>
+<meta name="description" content="Rocket League bots, different playstyles, and one familiar menu. Find your Vanta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b10;
+  --bg2:#120f16;
+  --card:#141118;
+  --card2:#1a1620;
+  --line:rgba(255,255,255,.07);
+  --line2:rgba(255,255,255,.12);
+  --text:#f3f6f8;
+  --muted:#9b94a4;
+  --dim:#6c6574;
+  --cyan:#ec648b;
+  --cyan-d:#c94e72;
+  --green:#6ff0b1;
+  --green-d:#2fd88a;
+  --red:#ff6b6b;
+  --amber:#ffb454;
+  --purple:#a78bfa;
+  --blue:#6aa7ff;
+  --discord:#5865f2;
+  --max:800px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -5%,rgba(236,100,139,.08),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 60%,rgba(236,100,139,.035),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 90%,rgba(111,240,177,.03),transparent 70%);
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+ul{list-style:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+.wrap{max-width:var(--max);margin:0 auto;padding:0 16px}
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:50;height:52px;
+  background:rgba(13,11,16,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav{max-width:var(--max);margin:0 auto;padding:0 16px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:.02em}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:#1a141c;border:1px solid var(--line);display:grid;place-items:center}
+.logo-mark svg{width:16px;height:16px}
+.links{display:flex;align-items:center;gap:22px;font-size:12px;font-weight:500;color:#cbc5d1}
+.links a{transition:color .15s}
+.links a:hover,.links a.active{color:#fff}
+.working{display:inline-flex;align-items:center;gap:6px;color:var(--green);font-weight:700;font-size:11px;letter-spacing:.02em}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.btn-buy{
+  background:var(--cyan);color:#2a0a16;font-weight:700;font-size:11.5px;
+  padding:9px 18px;border-radius:7px;box-shadow:0 0 18px rgba(236,100,139,.35);
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-buy:hover{transform:translateY(-1px);box-shadow:0 0 26px rgba(236,100,139,.5)}
+.burger{display:none;width:34px;height:34px;border-radius:8px;border:1px solid var(--line2);align-items:center;justify-content:center}
+.burger span,.burger span::before,.burger span::after{display:block;width:14px;height:1.5px;background:#cfd6dc;position:relative;content:""}
+.burger span::before{position:absolute;top:-5px}
+.burger span::after{position:absolute;top:5px}
 
-        /* Navbar */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+/* ---------- shared ---------- */
+.page{display:none;padding-bottom:70px;animation:fade .25s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#b9b3c1}
+h1,h2{font-weight:600;letter-spacing:-.03em;line-height:1.08}
+h2.big{font-size:28px;margin-top:12px}
+h1.big{font-size:34px;margin-top:14px}
+.sub{color:var(--muted);font-size:12px;margin-top:10px}
+.sec{padding-top:70px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.sec-head .aside{text-align:left;font-size:11px;color:var(--muted);max-width:230px}
+.aside a.more{display:inline-block;margin-top:8px;color:#e8edf1;font-weight:500}
+.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:10px}
+.arrow{display:inline-block;transition:transform .15s}
+a:hover>.arrow,button:hover>.arrow{transform:translateX(2px)}
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 700;
-            font-size: 20px;
-        }
+/* ---------- hero ---------- */
+.hero{padding:76px 0 20px}
+.hero h1{font-size:46px;max-width:560px}
+.hero h1 span{color:var(--cyan)}
+.hero p{max-width:440px;color:var(--muted);font-size:13px;margin-top:16px}
+.hero .cta{display:flex;gap:10px;margin-top:24px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:11.5px;padding:11px 20px;border-radius:7px;transition:transform .15s,box-shadow .15s,background .15s}
+.btn.cyan{background:var(--cyan);color:#2a0a16;box-shadow:0 0 22px rgba(236,100,139,.3)}
+.btn.cyan:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(236,100,139,.45)}
+.btn.ghost{border:1px solid var(--line2);color:#dfe5ea}
+.btn.ghost:hover{background:rgba(255,255,255,.04)}
+.btn.green{background:var(--green);color:#04170d}
+.btn.green:hover{transform:translateY(-1px)}
+.btn.discord{background:var(--discord);color:#fff;padding:9px 16px;font-size:11px}
+.stats{display:flex;gap:34px;margin-top:38px;padding-top:20px;border-top:1px solid var(--line);max-width:460px}
+.stats b{display:block;font-size:20px;font-weight:600}
+.stats span{font-size:10.5px;color:var(--muted)}
 
-        .logo-icon {
-            background: var(--accent-color);
-            color: var(--bg-color);
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-weight: 900;
-        }
+/* ---------- roster ---------- */
+.roster{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:34px}
+.bot-card{
+  position:relative;padding:14px 16px 14px;border-radius:8px;
+  background:rgba(24,20,28,.7);border:1px solid var(--line);
+  display:flex;flex-direction:column;min-height:236px;transition:border-color .2s,transform .2s;
+}
+.bot-card:hover{border-color:var(--line2)}
+.bot-card.t1{border-color:rgba(111,240,177,.4);box-shadow:inset 0 0 40px rgba(111,240,177,.04)}
+.bot-card .top{display:flex;justify-content:space-between;font-size:8.5px;color:var(--dim)}
+.bot-card .top em{font-style:normal;color:#c9d1d8}
+.bot-card.t1 .top em{color:var(--green)}
+.ico{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;margin-top:20px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.ico svg{width:16px;height:16px}
+.bot-card h3{font-size:14px;font-weight:600;margin-top:16px;letter-spacing:-.01em}
+.bot-card .meta{font-size:9.5px;color:#a49dad;margin-top:6px}
+.bot-card .meta i{font-style:normal;color:var(--dim);margin:0 5px}
+.bot-card p{font-size:10.5px;color:#a49dad;margin-top:14px;line-height:1.7;flex:1}
+.bot-card .foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px;margin-top:14px;font-size:10px;font-weight:600}
+.bot-card .foot .up{color:var(--green);font-size:11px}
 
-        nav {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
+/* ---------- config mock ---------- */
+.menu-sec{display:grid;grid-template-columns:1fr 1fr;gap:110px;align-items:center;margin-top:90px}
+.mock{border-radius:10px;padding:16px;background:linear-gradient(180deg,#18141c,#120f16);border:1px solid var(--line)}
+.mock .lbl{font-size:8.5px;font-weight:700;letter-spacing:.12em;color:#a8a1b0}
+.mock-win{margin-top:14px;border-radius:8px;background:#110e14;border:1px solid var(--line);padding:12px;height:350px;opacity:.9}
+.mock-top{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#d6dde3}
+.mock-top .l{display:flex;align-items:center;gap:6px}
+.mock-top .dot{width:6px;height:6px}
+.mock-top .k{font-size:8px;color:var(--dim);border:1px solid var(--line);padding:2px 6px;border-radius:4px;margin-left:auto;margin-right:10px}
+.mock-tabs{display:flex;gap:18px;font-size:9.5px;color:var(--dim);margin-top:14px;padding-left:6px}
+.mock-tabs .on{color:#fff;border-bottom:1px solid var(--green);padding-bottom:4px}
+.mock-body{font-size:9.5px;color:#9aa5af;margin-top:10px;padding-left:6px}
+.mock-body .row{display:flex;align-items:center;gap:8px;margin:7px 0}
+.tg{width:18px;height:10px;border-radius:6px;background:#27313b;position:relative;flex:none}
+.tg.on{background:var(--green-d)}
+.tg::after{content:"";position:absolute;top:1px;left:1px;width:8px;height:8px;border-radius:50%;background:#cfd6dc;transition:left .15s}
+.tg.on::after{left:9px}
+.sel{display:flex;justify-content:space-between;align-items:center;width:150px;padding:3px 6px;border:1px solid var(--line);border-radius:4px;font-size:9px;color:#a8a1b0}
+.sel b{font-weight:400;font-size:7px}
+.chip-cpu{font-size:8px;border:1px solid var(--line2);border-radius:8px;padding:1px 6px;color:#c9d1d8}
+.mock-btn{margin-top:12px;text-align:center;padding:5px;border:1px solid var(--line);border-radius:4px;font-size:9.5px;color:#9aa5af}
+.steps{margin-top:24px}
+.steps li{display:grid;grid-template-columns:22px 1fr;gap:6px;padding:14px 0;border-top:1px solid var(--line)}
+.steps li:last-child{border-bottom:0}
+.steps .n{font-size:8.5px;color:var(--dim);padding-top:3px}
+.steps b{display:block;font-size:11.5px;font-weight:600}
+.steps span{font-size:10.5px;color:var(--muted)}
+.link{display:inline-flex;gap:6px;align-items:center;font-size:11px;font-weight:500;margin-top:14px;color:#eaf0f4}
 
-        nav a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 15px;
-            font-weight: 500;
-            transition: color 0.2s;
-            cursor: pointer;
-        }
+.stars{color:var(--green);font-size:8px;letter-spacing:2px}
+.vouch p{font-size:11px;color:#dce2e7;margin-top:16px;line-height:1.75;word-break:break-word}
+.who{display:flex;align-items:center;justify-content:space-between;margin-top:18px;font-size:9px;color:var(--muted)}
+.who .u{display:flex;align-items:center;gap:6px}
+.av{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#2a3642,#121a22);border:1px solid var(--line2)}
 
-        nav a:hover, nav a.active {
-            color: var(--text-main);
-        }
+/* ---------- cta band ---------- */
+.band{margin-top:70px;padding-top:38px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:30px}
+.band .r{display:flex;flex-direction:column;align-items:flex-end;gap:14px;font-size:10.5px;padding-top:2px}
+.band .r a.ask{font-weight:500;color:#e5ebef}
 
-        .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--accent-color);
-            font-weight: 600;
-        }
+/* ---------- products ---------- */
+.pkgs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:34px}
+.pkg{padding:16px 18px 18px;position:relative}
+.pkg.t1{border-color:rgba(111,240,177,.25)}
+.pkg .hd{display:flex;justify-content:space-between;font-size:8.5px;font-weight:600;letter-spacing:.08em;color:var(--dim)}
+.pkg .hd em{font-style:normal;color:#d5dbe0}
+.pkg .intro{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.pkg h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.pkg .intro p{font-size:10.5px;color:var(--muted);margin-top:8px;max-width:170px}
+.art{width:68px;height:68px;border-radius:16px;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#0f2530,#0f0c13);border:1px solid var(--line)}
+.art svg{width:36px;height:36px}
+.art.gold{background:
+  radial-gradient(circle at 25% 30%,#d9a43a 0,transparent 45%),
+  radial-gradient(circle at 75% 70%,#a3731c 0,transparent 50%),
+  radial-gradient(circle at 70% 25%,#f3cd6a 0,transparent 35%),#2a1d08}
+.cnt{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.cnt b{font-size:17px;font-weight:600}.cnt small{font-size:9.5px;color:var(--muted);margin-left:3px}
+.cnt a{font-size:10px;font-weight:600}
+.names{padding:14px 0 18px}
+.names .eyebrow{font-size:8px;color:#a49dad}
+.names .eyebrow.g{color:var(--green)}
+.names p{font-size:10px;color:#a49dad;margin-top:8px}
+.price-row{display:flex;justify-content:space-between;align-items:flex-end}
+.price-row small{font-size:9px;color:var(--muted);display:block}
+.price-row b{font-size:25px;font-weight:600;letter-spacing:-.02em}
+.price-row .fine{font-size:8.5px;color:var(--muted);text-align:right;line-height:1.6}
+.pkg .btn{width:100%;justify-content:space-between;margin-top:14px;padding:11px 16px;font-size:11px}
+.notes{margin-top:22px;font-size:10px;color:var(--muted);display:grid;gap:14px}
+.notes div{display:grid;grid-template-columns:100px 1fr;gap:14px}
+.notes b{color:#fff;font-weight:600}
+.notes a{color:#fff;text-decoration:underline;text-underline-offset:2px}
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-color);
-        }
+/* ---------- product cards ---------- */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px}
+.pcard{display:block;border-radius:10px;overflow:hidden;background:#1a181d;border:1px solid rgba(255,255,255,.09);transition:transform .2s,border-color .2s}
+.pcard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18)}
+.part{position:relative;height:216px;display:grid;place-items:center;border-bottom:1px solid;overflow:hidden;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:28px 28px}
+.part span{position:absolute;font-size:8px;font-weight:600;letter-spacing:.14em}
+.pn{top:14px;left:16px}.po{top:14px;right:16px}.pl{bottom:14px;left:16px}.pa{bottom:12px;right:16px;font-size:13px!important;letter-spacing:0!important}
+.pcircle{position:absolute;width:200px;height:200px}
+.pmark{position:relative;width:96px;height:96px}
+.pbody{padding:20px 20px 16px}
+.prow{display:flex;justify-content:space-between;align-items:center}
+.pbody h3{font-size:19px;font-weight:600;letter-spacing:-.02em}
+.badge{font-size:7px;font-weight:700;letter-spacing:.1em;padding:4px 8px;border-radius:5px;border:1px solid}
+.pbody p{font-size:10.5px;color:#8a8590;margin-top:12px}
+.pfoot{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);font-size:10px}
+.pfoot b{font-weight:600;color:#e8e3ee}
+.pfoot .ex i{font-style:normal;margin-left:4px;color:#8a8590}
+.vanta .part{background-size:100% 100%,28px 28px,28px 28px;color:#a995e8;border-color:rgba(169,149,232,.3);background-color:#26213a;
+  background-image:radial-gradient(circle at 50% 35%,rgba(120,100,200,.28),transparent 65%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px)}
+.vanta .badge{color:#b6a6f0;border-color:rgba(169,149,232,.55);background:rgba(169,149,232,.08)}
+.vanta .ex{color:#b48fd0}
+.wolvot .part{background-size:100% 100%,28px 28px,28px 28px;color:#e88a98;border-color:rgba(232,138,152,.3);background-color:#3a2127;
+  background-image:radial-gradient(circle at 50% 35%,rgba(200,80,100,.3),transparent 65%),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px)}
+.wolvot .badge{color:#f0a070;border-color:rgba(240,160,112,.55);background:rgba(240,160,112,.08)}
+.wolvot .ex{color:#d68a9a}
+@media (max-width:760px){.prod-grid{grid-template-columns:1fr}}
 
-        .btn-buy {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            padding: 10px 22px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
+/* ---------- bots page ---------- */
+.filters{
+  position:sticky;top:52px;z-index:20;margin-top:24px;padding:11px 14px 12px;
+  background:rgba(20,17,24,.92);backdrop-filter:blur(10px);border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;
+}
+.frow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.frow label{font-size:8px;font-weight:600;letter-spacing:.1em;color:var(--dim);display:flex;align-items:center;gap:6px}
+.frow select{
+  background:#120f16;color:#e6ebef;border:1px solid var(--line2);border-radius:6px;
+  padding:6px 8px;font:500 10px "Inter",sans-serif;appearance:none;-webkit-appearance:none;padding-right:22px;
+  background-image:linear-gradient(45deg,transparent 50%,#8b97a3 50%),linear-gradient(135deg,#8b97a3 50%,transparent 50%);
+  background-position:calc(100% - 11px) 55%,calc(100% - 7px) 55%;background-size:4px 4px;background-repeat:no-repeat;
+}
+.frow .count{margin-left:auto;font-size:9.5px;color:var(--muted)}
+.pills{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pill{font-size:9.5px;padding:5px 12px;border-radius:99px;border:1px solid rgba(236,100,139,.22);background:rgba(236,100,139,.04);color:#cfeff0;transition:all .15s}
+.pill:hover{border-color:rgba(236,100,139,.5)}
+.pill.on{background:rgba(236,100,139,.16);border-color:var(--cyan);color:#fff}
+.group{margin-top:34px}
+.group h3{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:-.01em}
+.group h3 small{font-size:9.5px;font-weight:400;color:var(--muted)}
+.group h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.bcard{position:relative;padding:14px;border-radius:9px;border:1px solid var(--line);background:linear-gradient(180deg,#18141c,#120f16);display:flex;flex-direction:column;transition:border-color .2s}
+.bcard:hover{border-color:var(--line2)}
+.bcard.t1{border-color:rgba(111,240,177,.4)}
+.bcard .tag{font-size:7.5px;font-weight:700;letter-spacing:.1em;position:absolute;top:8px;left:14px;display:flex;align-items:center;gap:4px}
+.bcard .tag.feat{color:var(--blue)}.bcard .tag.t{color:var(--green)}
+.bcard .tag::before{content:"";width:4px;height:4px;border-radius:50%;background:currentColor}
+.bcard .hd{display:flex;gap:10px;align-items:center}
+.bcard.hastag .hd{margin-top:12px}
+.bcard .ico{margin:0;width:34px;height:34px}
+.bcard h4{font-size:12.5px;font-weight:700}
+.bcard .sm{font-size:8.5px;font-weight:600;color:#a49dad;margin-top:2px}
+.bcard .sm .ssl{color:var(--blue)} .bcard .sm .gc{color:#f48fb1}
+.bcard .desc{font-size:10px;color:#a49dad;line-height:1.7;margin-top:12px}
+.bcard ul.ft{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:9.5px;color:#cdc7d3;display:grid;gap:5px;flex:1}
+.bcard ul.ft li{display:flex;gap:8px;align-items:flex-start}
+.bcard ul.ft li::before{content:"✓";color:var(--green-d);font-size:9px;line-height:1.5}
+.bcard .bf{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:9px;color:#a49dad}
+.bcard .bf a{color:var(--cyan);font-weight:700}
+.which{margin-top:40px;padding:16px 16px 14px}
+.which h3{font-size:13px;font-weight:600}
+.which .s{font-size:9px;color:var(--muted);margin-top:8px}
+table{width:100%;border-collapse:separate;border-spacing:0;margin-top:14px;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:10px}
+th{font-size:8.5px;letter-spacing:.1em;text-align:left;color:#a49dad;background:rgba(255,255,255,.03);padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:#c4ccd3}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--cyan);font-weight:700;width:90px}
+.which .fn{font-size:8.5px;color:var(--muted);margin-top:10px}
+.empty{display:none;text-align:center;color:var(--muted);padding:40px 0;font-size:12px}
 
-        .btn-buy:hover {
-            background-color: var(--accent-hover);
-        }
+/* ---------- setup ---------- */
+.setup-wrap{max-width:420px;margin:0 auto;padding:0 16px}
+.alert{
+  margin-top:26px;display:flex;gap:9px;align-items:center;padding:9px 12px;border-radius:7px;
+  background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.32);font-size:9px;color:#f3b8b8
+}
+.alert svg{width:11px;height:11px;flex:none}
+.alert b{color:#ff8a8a}
+.tabs{display:flex;gap:6px;margin-top:20px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-size:10.5px;font-weight:600;color:var(--muted);padding:8px 10px;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s}
+.tab:hover{color:#fff}
+.tab.on{color:var(--cyan);border-color:var(--cyan)}
+.tabpane{display:none}.tabpane.on{display:block;animation:fade .2s ease}
+.scard{margin-top:16px;padding:14px 14px 14px;border-radius:10px;background:linear-gradient(180deg,#18141c,#120f16);border:1px solid var(--line2)}
+.scard h3{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700}
+.scard h3 .ic{width:14px;height:14px;border-radius:4px;display:grid;place-items:center;background:rgba(236,100,139,.12);color:var(--cyan);font-size:8px}
+.scard .sub2{font-size:9px;color:var(--muted);margin-top:6px}
+.scard .sub2 b{color:#fff}
+.srows{margin-top:12px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:rgba(0,0,0,.18)}
+.srow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:0}
+.srow .gl{width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,.05);border:1px solid var(--line);display:grid;place-items:center;font-size:8px;color:#a49dad;flex:none}
+.srow .t{flex:1;min-width:0}
+.srow .t b{display:block;font-size:10.5px;font-weight:700}
+.srow .t span{display:block;font-size:8.5px;color:var(--muted);margin-top:1px}
+.srow .t span em{font-style:normal;color:#e6ebef}
+.val{font-size:8.5px;font-weight:700;padding:4px 8px;border-radius:5px;background:rgba(236,100,139,.12);color:var(--cyan);border:1px solid rgba(236,100,139,.28);white-space:nowrap}
+.key{font-size:9px;font-weight:700;padding:4px 9px;border-radius:5px;background:rgba(236,100,139,.1);color:var(--cyan);border:1px solid rgba(236,100,139,.3);white-space:nowrap;min-width:26px;text-align:center}
+.blox{font-size:7px;font-weight:700;letter-spacing:.08em;color:var(--amber);border:1px solid rgba(255,180,84,.4);background:rgba(255,180,84,.08);padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.subhd{font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--dim);padding:10px 12px 6px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}
+.important{
+  margin-top:12px;display:flex;gap:8px;align-items:flex-start;padding:9px 11px;border-radius:7px;
+  background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.32);font-size:9px;color:#f3b8b8;line-height:1.55
+}
+.important b{color:#ff8a8a}
+.fps-steps{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;background:rgba(0,0,0,.18)}
+.fps-steps div{display:flex;align-items:center;gap:7px;font-size:8.5px;color:#cdc7d3}
+.fps-steps i{font-style:normal;width:14px;height:14px;border-radius:50%;background:rgba(236,100,139,.12);color:var(--cyan);display:grid;place-items:center;font-size:7px;font-weight:700;flex:none}
+.fps-steps div:nth-child(n+3){grid-column:auto}
+.note-cyan{margin-top:10px;font-size:8.5px;color:#a49dad;line-height:1.6;padding:8px 10px;border-left:2px solid var(--cyan);background:rgba(236,100,139,.04);border-radius:0 6px 6px 0}
+.note-cyan b{color:#fff}
+.note-warn{margin-top:8px;font-size:8.5px;line-height:1.6;padding:8px 10px;border-left:2px solid var(--amber);background:rgba(255,180,84,.05);border-radius:0 6px 6px 0;color:#d9c4a0}
+.note-warn b{color:var(--red)}
+.drops{margin-top:12px;font-size:8.5px;font-weight:700;color:#cdc7d3}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips span{font-size:8px;padding:4px 8px;border-radius:5px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:#cdc7d3}
+.plain{margin-top:16px;font-size:11px;color:#b5bec7;line-height:1.7}
+.plain li{display:flex;gap:8px;margin:7px 0}
+.plain li::before{content:"✓";color:var(--green-d)}
 
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            flex: 1;
-            width: 100%;
-        }
+/* ---------- footer ---------- */
+footer{background:#110e15;border-top:1px solid var(--line);margin-top:60px;padding:36px 0 24px}
+.fgrid{max-width:var(--max);margin:0 auto;padding:0 16px;display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:30px;font-size:10.5px}
+.fgrid h5{font-size:10.5px;font-weight:700;margin-bottom:12px;color:#fff}
+.fgrid li{margin:9px 0;color:#a49dad}
+.fgrid li a:hover{color:#fff}
+.fgrid .about{color:#a49dad;line-height:1.7;margin-top:14px;max-width:190px}
+.fgrid .support p{color:#a49dad;line-height:1.6;margin-bottom:12px}
+.fbottom{max-width:var(--max);margin:30px auto 0;padding:18px 16px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#a49dad}
+.pay{display:flex;align-items:center;gap:6px;font-size:8.5px}
+.pay span{padding:2px 6px;border-radius:4px;font-weight:700;background:rgba(255,255,255,.06)}
+.pay .btc{color:#f7931a}.pay .ltc{color:#c9d1d8}.pay .eth{color:#8a96ff}
 
-        .tab-content {
-            display: none;
-        }
+.top-btn{
+  position:fixed;right:18px;bottom:18px;width:32px;height:32px;border-radius:50%;z-index:60;
+  display:grid;place-items:center;background:#1d1219;border:1px solid rgba(236,100,139,.4);color:var(--cyan);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s
+}
+.top-btn.show{opacity:1;pointer-events:auto}
+.top-btn:hover{transform:translateY(-2px)}
+.top-btn svg{width:14px;height:14px}
 
-        .tab-content.active {
-            display: block;
-        }
 
-        /* Hero / Home Section */
-        .hero {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            margin-bottom: 60px;
-        }
+/* ---------- price list ---------- */
+.prices{margin-top:34px;max-width:520px;padding:6px 18px}
+.prow{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:0}
+.prow b{flex:1;font-size:13px;font-weight:600}
+.prow .amt{font-size:22px;font-weight:600;letter-spacing:-.02em;min-width:64px;text-align:right}
+.btn.sm{padding:9px 16px;font-size:11px}
 
-        .hero-left h1 {
-            font-size: 52px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
+/* ---------- bot cards (Vanta / Wolvot) ---------- */
+.vb-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+.vb{
+  --ac:#a99be6;--ring:rgba(169,155,230,.22);--glow:rgba(110,92,190,.32);--bline:rgba(169,155,230,.14);
+  --bcol:#a99be6;--bbg:rgba(169,155,230,.08);
+  background:#17131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;overflow:hidden;
+  transition:border-color .2s,transform .2s
+}
+.vb.wolvot{--ac:#e98b97;--ring:rgba(233,139,151,.2);--glow:rgba(190,70,84,.34);--bline:rgba(233,139,151,.14);--bcol:#f09a5e;--bbg:rgba(240,154,94,.08)}
+.vb.vanta{background:#1b1a1f}
+.vb.vanta .vb-art{background:
+    radial-gradient(circle at 50% 45%,var(--glow),transparent 62%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),
+    #1a1820}
+.vb:hover{border-color:rgba(255,255,255,.16);transform:translateY(-2px)}
+.vb-art{
+  position:relative;height:218px;color:var(--ac);display:grid;place-items:center;border-bottom:1px solid var(--bline);
+  background:
+    radial-gradient(circle at 50% 45%,var(--glow),transparent 62%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),
+    #1c141b
+}
+.vb.wolvot .vb-art{background:
+    radial-gradient(circle at 50% 45%,var(--glow),transparent 62%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 28px),
+    #20171a}
+.vb-art .ring{position:absolute;left:50%;top:50%;width:196px;height:196px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid var(--ring)}
+.vb-art svg{position:relative;width:104px;height:104px}
+.vb-art .c{position:absolute;font-size:7.5px;font-weight:700;letter-spacing:.12em;color:var(--ac);opacity:.65}
+.vb-art .tl{top:14px;left:16px;opacity:.5}
+.vb-art .tr{top:14px;right:16px}
+.vb-art .bl{bottom:14px;left:16px}
+.vb-art .br{bottom:12px;right:16px;font-size:13px;letter-spacing:0}
+.vb-body{padding:22px 20px 18px}
+.vb-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.vb-row h3{font-size:22px;font-weight:600;letter-spacing:-.02em}
+.vb .badge{font-size:7.5px;font-weight:700;letter-spacing:.1em;padding:4px 9px;border-radius:5px;color:var(--bcol);border:1px solid var(--bcol);background:var(--bbg)}
+.vb-body p{font-size:11px;color:#9a97a3;margin-top:16px}
+.vb-foot{display:flex;justify-content:space-between;align-items:center;margin-top:26px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);font-size:10px}
+.vb-foot .mode{font-weight:600;color:#e7e4ee}
+.vb-foot a,.vb-foot .ex{color:var(--ac);font-weight:500}
+a.vb{display:block}
 
-        .hero-left p {
-            color: var(--text-muted);
-            font-size: 18px;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
 
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-secondary {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Video / Clip Player Box */
-        .video-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        .video-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .video-header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .video-header-right {
-            display: flex;
-            gap: 8px;
-        }
-
-        .badge-fps {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--accent-color);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .badge-sub {
-            background: var(--border-color);
-            color: var(--text-muted);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .video-footer {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        /* Pricing Section */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .pricing-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .pricing-card.featured {
-            border-color: var(--accent-color);
-        }
-
-        .pricing-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--accent-color);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-        }
-
-        .pricing-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .pricing-desc {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 25px;
-            min-height: 40px;
-        }
-
-        .pricing-price {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            color: var(--text-main);
-        }
-
-        .pricing-btn {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            margin-top: auto;
-        }
-
-        /* Binds & Setup Section */
-        .binds-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .binds-header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .binds-header h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .binds-header p {
-            color: var(--text-muted);
-        }
-
-        .binds-table {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .bind-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-
-        .bind-name {
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .bind-key {
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-weight: 700;
-            color: var(--accent-color);
-        }
-
-        .bind-section-title {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin: 20px 0 10px 5px;
-            font-weight: 700;
-        }
-
-        .fps-notice {
-            background: rgba(255, 170, 0, 0.1);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            color: #ffaa00;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-            font-size: 14px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border-color);
-            padding: 40px 50px;
-            background: var(--bg-color);
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-left {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .footer-brand {
-            color: var(--text-main);
-            font-weight: 700;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            color: var(--text-main);
-        }
-
-        @media (max-width: 900px) {
-            .hero {
-                grid-template-columns: 1fr;
-            }
-            header {
-                padding: 15px 20px;
-            }
-        }
-    </style>
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,6,10,.8);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal[hidden]{display:none}
+.modal-box{width:100%;max-width:560px;max-height:min(82vh,720px);display:flex;flex-direction:column;border-radius:12px;background:linear-gradient(180deg,#18141c,#120f16);border:1px solid var(--line2);box-shadow:0 24px 80px rgba(0,0,0,.6);animation:pop .18s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px 14px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.3}
+.modal-x{flex:none;width:28px;height:28px;border-radius:7px;border:1px solid var(--line2);font-size:18px;line-height:1;color:#cfd6dc;display:grid;place-items:center;transition:background .15s}
+.modal-x:hover{background:rgba(255,255,255,.06)}
+.modal-body{padding:6px 20px 20px;overflow-y:auto;font-size:11.5px;color:#a49dad;line-height:1.7}
+.modal-body h3{font-size:12px;font-weight:700;color:#fff;margin:18px 0 6px}
+.modal-body p{margin:0}
+.tos-note{border-radius:8px;padding:10px 12px;border:1px solid var(--line)}
+.tos-note b{display:block;color:#fff;font-size:11.5px;margin-bottom:4px}
+.tos-note.warn{background:rgba(255,180,84,.07);border-color:rgba(255,180,84,.3)}
+.tos-note.info{background:rgba(236,100,139,.05);border-color:rgba(236,100,139,.25)}
+.tos-date{margin-top:20px!important;font-size:10px;color:var(--dim)}
+body.modal-open{overflow:hidden}
+/* ---------- responsive ---------- */
+@media (max-width:760px){
+  .links{display:none;position:absolute;top:52px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:0;background:#0f0c13;border-bottom:1px solid var(--line);padding:8px 16px}
+  .links.open{display:flex}
+  .links a{padding:12px 0;width:100%;border-bottom:1px solid var(--line)}
+  .burger{display:flex}
+  .btn-buy{margin-left:auto}
+  .hero h1{font-size:34px}
+  .roster,.vb-grid,.menu-sec{grid-template-columns:1fr}
+  .menu-sec{gap:40px}
+  .sec-head{flex-direction:column;align-items:flex-start}
+  .band{flex-direction:column}
+  .band .r{align-items:flex-start}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .fbottom{flex-direction:column;gap:12px;align-items:flex-start}
+  .notes div{grid-template-columns:1fr;gap:2px}
+  .mock-win{height:auto;padding-bottom:20px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header>
-        <a href="#" class="logo-container" onclick="switchTab('home')">
-            <div class="logo-icon">⚡</div>
-            <span>VANTA</span>
+<header>
+  <div class="nav">
+    <a href="#home" class="logo" aria-label="Vanta home">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13.5 2 5 13.5h6L10 22l9-12h-6.2L13.5 2Z" fill="#ec648b"/></svg></span>
+      VANTA
+    </a>
+    <nav class="links" id="links">
+      <a href="#home" data-nav="home">Home</a>
+      <a href="#products" data-nav="products">Products</a>
+      <a href="#bots" data-nav="bots">Bots</a>
+      <a href="#setup" data-nav="setup">Setup</a>
+      <a href="#status" class="working" data-nav="status"><span class="dot"></span>WORKING</a>
+    </nav>
+    <a href="https://discord.gg/ArnHTha6yW" class="btn-buy" data-discord target="_blank" rel="noopener">Buy Now</a>
+    <button class="burger" id="burger" aria-label="Menu"><span></span></button>
+  </div>
+</header>
+
+<main>
+
+<!-- ======================= HOME ======================= -->
+<section class="page active" id="page-home">
+  <div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">Blox League &amp; Turbo Soccer bots</div>
+      <h1 class="big">Different playstyles.<br>One familiar menu.</h1>
+      <p>Vanta gives you a roster of Blox League &amp; Turbo Soccer bots, from controlled positioning to aerial-heavy play, all loaded from one menu you can set up in minutes.</p>
+      <div class="cta">
+        <a href="#products" class="btn cyan">See pricing <span class="arrow">→</span></a>
+        <a href="#setup" class="btn ghost">Read the setup guide</a>
+      </div>
+      <div class="stats">
+        <div><b>2</b><span>bots</span></div>
+        <div><b>5</b><span>key lengths</span></div>
+        <div><b>120</b><span>FPS target</span></div>
+      </div>
+    </div>
+
+    <div class="sec" style="padding-top:60px">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">The roster</div>
+          <h2 class="big">Different bots.<br>Different strengths.</h2>
+        </div>
+        <div class="aside">
+          From controlled positioning to aerial-heavy play. See what each model does before you choose.
+          <br><a class="more" href="#bots">Browse all 2 bots &nbsp;→</a>
+        </div>
+      </div>
+
+      <div class="vb-grid">
+        <a class="vb vanta" href="#bots">
+          <div class="vb-art">
+            <span class="c tl">01</span><span class="c tr">VANTA ORIGINAL</span>
+            <span class="c bl">VANTA BOT</span><span class="c br">↗</span>
+            <i class="ring"></i>
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+              <path d="M50 8 86 29v42L50 92 14 71V29Z"/>
+              <path d="M14 29l36 21 36-21M50 50v42"/>
+              <path d="M50 30 67 44 50 58 33 44Z"/>
+            </svg>
+          </div>
+          <div class="vb-body">
+            <div class="vb-row"><h3>Vanta</h3><span class="badge">DIAMOND</span></div>
+            <p>Vanta bot for 1v1 matches.</p>
+            <div class="vb-foot"><span class="mode">1v1</span><span class="ex">Explore <span class="arrow">→</span></span></div>
+          </div>
         </a>
-        <nav>
-            <a onclick="switchTab('home')" id="nav-home" class="active">Home</a>
-            <a onclick="switchTab('products')" id="nav-products">Our Prices</a>
-            <a onclick="switchTab('bots')" id="nav-bots">Bot Information</a>
-            <a onclick="switchTab('binds')" id="nav-binds">Setup & Binds</a>
-            <div class="status-badge">
-                <div class="status-dot"></div>
-                WORK IN PROGRESS
-            </div>
-        </nav>
-        <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="btn-buy">Join Discord</a>
-    </header>
+        <a class="vb wolvot" href="#bots">
+          <div class="vb-art">
+            <span class="c tl">02</span><span class="c tr">WOLVOT</span>
+            <span class="c bl">WOLVOT BOT</span><span class="c br">↗</span>
+            <i class="ring"></i>
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+              <path d="M18 10 37 30h26L82 10l6 36L50 92 12 46Z"/>
+              <path d="M37 30 41 54M63 30 59 54M28 42l17 5M72 42 55 47M41 54l9 8 9-8M40 72h20L50 84Z"/>
+            </svg>
+          </div>
+          <div class="vb-body">
+            <div class="vb-row"><h3>Wolvot</h3><span class="badge">GRAND CHAMP</span></div>
+            <p>Wolvot bot for 1v1 matches.</p>
+            <div class="vb-foot"><span class="mode">1v1</span><span class="ex">Explore <span class="arrow">→</span></span></div>
+          </div>
+        </a>
+      </div>
+    </div>
 
-    <!-- Content Area -->
-    <div class="container">
+  </div>
+</section>
 
-        <!-- HOME TAB -->
-        <div id="tab-home" class="tab-content active">
-            <div class="hero">
-                <div class="hero-left">
-                    <h1>Meet your next main.</h1>
-                    <p>Blox League & Turbo Soccer bots, different playstyles, and one familiar menu.</p>
-                    <div class="hero-buttons">
-                        <a onclick="switchTab('products')" class="btn-primary">Explore Pricing</a>
-                        <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="btn-secondary">Join Discord</a>
-                    </div>
-                </div>
-                <div class="hero-right">
-                    <div class="video-box">
-                        <div class="video-header">
-                            <div class="video-header-left">
-                                <div class="status-dot"></div>
-                                <span>VANTA IN ACTION</span>
-                            </div>
-                            <div class="video-header-right">
-                                <span class="badge-fps">120 FPS</span>
-                                <span class="badge-sub">60 / 120</span>
-                            </div>
-                        </div>
-                        <div class="video-container">
-                            <iframe src="https://www.youtube-nocookie.com/embed/G14SZmtCVuo?autoplay=1&mute=1&loop=1&playlist=G14SZmtCVuo" title="Vanta Bot Training Footage" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                        <div class="video-footer">
-                            <span>Blox League & Turbo Soccer</span>
-                            <span>Raw Training Footage</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- ======================= PRODUCTS ======================= -->
+<section class="page" id="page-products">
+  <div class="wrap">
+    <div style="padding-top:64px">
+      <div class="eyebrow">Pricing</div>
+      <h1 class="big" style="font-size:36px;margin-top:16px">Vanta Access Keys</h1>
+      <p class="sub" style="font-size:11px">Pick a key length, then buy on Discord.</p>
+    </div>
+    <div class="card prices">
+      <div class="prow"><b>3 Day Key</b><span class="amt">$8</span><a class="btn cyan sm" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">Buy Now <span>↗</span></a></div>
+      <div class="prow"><b>1 Week Key</b><span class="amt">$15</span><a class="btn cyan sm" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">Buy Now <span>↗</span></a></div>
+      <div class="prow"><b>2 Week Key</b><span class="amt">$20</span><a class="btn cyan sm" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">Buy Now <span>↗</span></a></div>
+      <div class="prow"><b>1 Month Key</b><span class="amt">$30</span><a class="btn cyan sm" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">Buy Now <span>↗</span></a></div>
+      <div class="prow"><b>3 Month Key</b><span class="amt">$70</span><a class="btn cyan sm" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">Buy Now <span>↗</span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BOTS ======================= -->
+<section class="page" id="page-bots">
+  <div class="wrap">
+    <div style="padding-top:64px">
+      <div class="eyebrow">The roster</div>
+      <h1 class="big" style="font-size:36px;margin-top:16px">Find your playstyle.</h1>
+      <p class="sub" style="font-size:11px">Pick a bot and see what it does before you buy.</p>
+    </div>
+
+    <div class="vb-grid">
+      <article class="vb vanta">
+        <div class="vb-art">
+          <span class="c tl">01</span><span class="c tr">VANTA ORIGINAL</span>
+          <span class="c bl">VANTA BOT</span><span class="c br">↗</span>
+          <i class="ring"></i>
+          <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+            <path d="M50 8 86 29v42L50 92 14 71V29Z"/>
+            <path d="M14 29l36 21 36-21M50 50v42"/>
+            <path d="M50 30 67 44 50 58 33 44Z"/>
+          </svg>
+        </div>
+        <div class="vb-body">
+          <div class="vb-row"><h3>Vanta</h3><span class="badge">DIAMOND</span></div>
+          <p>Vanta bot for 1v1 matches.</p>
+          <div class="vb-foot"><span class="mode">1v1</span><a href="#products">Explore <span class="arrow">→</span></a></div>
+        </div>
+      </article>
+
+      <article class="vb wolvot">
+        <div class="vb-art">
+          <span class="c tl">02</span><span class="c tr">WOLVOT</span>
+          <span class="c bl">WOLVOT BOT</span><span class="c br">↗</span>
+          <i class="ring"></i>
+          <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+            <path d="M18 10 37 30h26L82 10l6 36L50 92 12 46Z"/>
+            <path d="M37 30 41 54M63 30 59 54M28 42l17 5M72 42 55 47M41 54l9 8 9-8M40 72h20L50 84Z"/>
+          </svg>
+        </div>
+        <div class="vb-body">
+          <div class="vb-row"><h3>Wolvot</h3><span class="badge">GRAND CHAMP</span></div>
+          <p>Wolvot bot for 1v1 matches.</p>
+          <div class="vb-foot"><span class="mode">1v1</span><a href="#products">Explore <span class="arrow">→</span></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SETUP ======================= -->
+<section class="page" id="page-setup">
+  <div class="setup-wrap">
+    <div class="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <span><b>Do the Setup tab first.</b> Wrong settings are the leading reason the bot underperforms.</span>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-tab="t-setup">Setup</button>
+      <button class="tab" data-tab="t-fix">Troubleshooting</button>
+    </div>
+
+    <!-- SETUP TAB -->
+    <div class="tabpane on" id="t-setup">
+      <div class="scard">
+        <h3><span class="ic">⌨</span>Binds</h3>
+        <div class="sub2">Set these controls in-game exactly as shown. The bot reads these keys.</div>
+
+        <div class="srows">
+          <div class="subhd">CONTROLS</div>
+          <div class="srow"><span class="gl">◀</span><div class="t"><b>Steering left</b></div><span class="key">A</span></div>
+          <div class="srow"><span class="gl">▶</span><div class="t"><b>Steering right</b></div><span class="key">D</span></div>
+          <div class="srow"><span class="gl">⤒</span><div class="t"><b>Jump</b></div><span class="key">Right click</span></div>
+          <div class="srow"><span class="gl">⚡</span><div class="t"><b>Boost</b></div><span class="key">Left click</span></div>
+          <div class="srow"><span class="gl">≋</span><div class="t"><b>Powerslide</b></div><span class="key">Left Shift</span></div>
+          <div class="srow"><span class="gl">▲</span><div class="t"><b>Pitch up / nose up</b></div><span class="key">I</span></div>
+          <div class="srow"><span class="gl">▼</span><div class="t"><b>Pitch down / nose down</b></div><span class="key">K</span></div>
+          <div class="srow"><span class="gl">↺</span><div class="t"><b>Air roll left</b></div><span class="key">Q</span></div>
+          <div class="srow"><span class="gl">↻</span><div class="t"><b>Air roll right</b></div><span class="key">E</span></div>
+          <div class="srow"><span class="gl">⟳</span><div class="t"><b>Free air roll</b></div><span class="key">F</span></div>
         </div>
 
-        <!-- PRODUCTS / OUR PRICES TAB -->
-        <div id="tab-products" class="tab-content">
-            <div class="binds-header">
-                <h2>Vanta Access Keys</h2>
-                <p>Pick your access level. Choose the duration below.</p>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-title">3 Day Key</div>
-                    <div class="pricing-desc">Short-term access to all core features and training models.</div>
-                    <div class="pricing-price">$8</div>
-                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 3 Days</a>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-title">1 Week Key</div>
-                    <div class="pricing-desc">Standard weekly pass for active players and grinders.</div>
-                    <div class="pricing-price">$15</div>
-                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 1 Week</a>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-title">2 Week Key</div>
-                    <div class="pricing-desc">Extended access for competitive climbing and full testing.</div>
-                    <div class="pricing-price">$20</div>
-                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 2 Weeks</a>
-                </div>
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Popular</div>
-                    <div class="pricing-title">1 Month Key</div>
-                    <div class="pricing-desc">Full monthly access with priority updates and support.</div>
-                    <div class="pricing-price">$30</div>
-                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 1 Month</a>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-title">3 Month Key</div>
-                    <div class="pricing-desc">Season pass for dedicated competitors wanting long-term dominance.</div>
-                    <div class="pricing-price">$70</div>
-                    <a href="https://discord.gg/sjfd7NqU4N" target="_blank" class="pricing-btn">Get 3 Months</a>
-                </div>
-            </div>
+        <div class="srows">
+          <div class="subhd">BLOX LEAGUE ONLY</div>
+          <div class="srow"><span class="gl">◁</span><div class="t"><b>Air yaw left<span class="blox">BLOX LEAGUE</span></b></div><span class="key">A</span></div>
+          <div class="srow"><span class="gl">▷</span><div class="t"><b>Air yaw right<span class="blox">BLOX LEAGUE</span></b></div><span class="key">D</span></div>
         </div>
 
-        <!-- BOT INFORMATION TAB -->
-        <div id="tab-bots" class="tab-content">
-            <div class="binds-header">
-                <h2>Bot Information</h2>
-                <p>Detailed breakdown of model parameters and specialized agent training steps.</p>
-            </div>
-            <div class="pricing-card" style="text-align: center; padding: 60px 20px; max-width: 600px; margin: 40px auto;">
-                <div class="status-badge" style="justify-content: center; margin: 0 auto 20px auto; width: fit-content;">WORK IN PROGRESS</div>
-                <h3 style="font-size: 24px; margin-bottom: 10px;">No Bots Ready Yet</h3>
-                <p style="color: var(--text-muted);">We are currently compiling model breakdowns and specifications. Check back soon!</p>
-            </div>
-        </div>
-
-        <!-- SETUP & BINDS TAB -->
-        <div id="tab-binds" class="tab-content">
-            <div class="binds-container">
-                <div class="binds-header">
-                    <h2>Custom Controls & Binds</h2>
-                    <p>Configure your keybinds to ensure smooth bot execution and precise physics reads.</p>
-                </div>
-
-                <div class="binds-table">
-                    <div class="bind-section-title">Core Controls</div>
-                    <div class="bind-row">
-                        <span class="bind-name">Steering Left</span>
-                        <span class="bind-key">A</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Steering Right</span>
-                        <span class="bind-key">D</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Jump</span>
-                        <span class="bind-key">Right Click</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Boost</span>
-                        <span class="bind-key">Left Click</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Powerslide</span>
-                        <span class="bind-key">Left Shift</span>
-                    </div>
-
-                    <div class="bind-section-title">Pitch & Movement</div>
-                    <div class="bind-row">
-                        <span class="bind-name">Pitch Up / Nose Up</span>
-                        <span class="bind-key">I</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Pitch Down / Nose Down</span>
-                        <span class="bind-key">K</span>
-                    </div>
-
-                    <div class="bind-section-title">Blox League Exclusive</div>
-                    <div class="bind-row">
-                        <span class="bind-name">Air Yaw Left</span>
-                        <span class="bind-key">A</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Air Yaw Right</span>
-                        <span class="bind-key">D</span>
-                    </div>
-
-                    <div class="bind-section-title">Air Roll & Rotation</div>
-                    <div class="bind-row">
-                        <span class="bind-name">Air Roll Left</span>
-                        <span class="bind-key">Q</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Air Roll Right</span>
-                        <span class="bind-key">E</span>
-                    </div>
-                    <div class="bind-row">
-                        <span class="bind-name">Free Air Roll</span>
-                        <span class="bind-key">F</span>
-                    </div>
-                </div>
-
-                <div class="fps-notice">
-                    ⚠️ IMPORTANT: Must have 120 FPS target (60 FPS minimum fallback). Inconsistent frame rates interfere with bot physics reads.
-                </div>
-            </div>
-        </div>
+        <div class="important"><span>⚠</span><span><b>IMPORTANT:</b> you must have <b>120 FPS</b>. If you can’t hold 120, lock the game to <b>60 FPS</b> instead.</span></div>
+      </div>
 
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-left">
-                <div class="footer-brand">
-                    <div class="logo-icon" style="width: 24px; height: 24px; font-size: 14px;">⚡</div>
-                    VANTA
-                </div>
-                <span>Blox league & turbo soccer bots, different play styles and one familiar menu.</span>
-            </div>
-            <div class="footer-links">
-                <a href="https://discord.gg/sjfd7NqU4N" target="_blank">Discord</a>
-                <a onclick="switchTab('products')">Pricing</a>
-                <a onclick="switchTab('binds')">Setup & Binds</a>
-            </div>
-        </div>
-    </footer>
+    <!-- TROUBLESHOOTING -->
+    <div class="tabpane" id="t-fix">
+      <div class="scard">
+        <h3><span class="ic">?</span>Troubleshooting</h3>
+        <div class="sub2">If something is off, check these first.</div>
+        <ul class="plain">
+          <li>Bot plays badly: make sure the game is running at 120 FPS (or 60 if you can’t hold 120).</li>
+          <li>Nothing happens: check the binds above and the toggle key.</li>
+          <li>Still stuck: ask in the Discord support channel.</li>
+        </ul>
+        <div style="margin-top:14px"><a class="btn discord" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">Join Discord</a></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('nav a[id^="nav-"]').forEach(el => el.classList.remove('active'));
+<!-- ======================= STATUS ======================= -->
+<section class="page" id="page-status">
+  <div class="wrap">
+    <div style="padding-top:64px">
+      <div class="eyebrow">Status</div>
+      <h1 class="big" style="font-size:36px;margin-top:16px">Everything is working.</h1>
+      <p class="sub" style="font-size:11px">Vanta is online right now.</p>
+    </div>
+    <div class="card" style="padding:16px;max-width:260px;margin-top:30px"><div class="eyebrow">Vanta</div><p style="margin-top:12px;display:flex;align-items:center;gap:8px;color:var(--green);font-weight:700;font-size:12px"><span class="dot"></span>WORKING</p></div>
+  </div>
+</section>
 
-            document.getElementById('tab-' + tabId).classList.add('active');
-            const navEl = document.getElementById('nav-' + tabId);
-            if(navEl) navEl.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <a href="#home" class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13.5 2 5 13.5h6L10 22l9-12h-6.2L13.5 2Z" fill="#ec648b"/></svg></span>VANTA</a>
+    </div>
+    <div>
+      <h5>Quick Links</h5>
+      <ul>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#bots">All Bots</a></li>
+        <li><a href="#setup">Setup</a></li>
+        <li><a href="#status">Status</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="#" data-modal="tos">Terms of Service</a></li>
+        <li><a href="#" data-modal="privacy">Privacy Policy</a></li>
+        <li><a href="#" data-modal="refund">Refund Policy</a></li>
+      </ul>
+    </div>
+    <div class="support">
+      <h5>Support</h5>
+      <p>Need help? Join our Discord for support.</p>
+      <a class="btn discord" href="https://discord.gg/ArnHTha6yW" data-discord target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A17 17 0 0 0 16 3l-.2.4a15.6 15.6 0 0 1 3.8 1.9 13 13 0 0 0-5-1.5 13 13 0 0 0-5.2 0 13 13 0 0 0-5 1.5A15.6 15.6 0 0 1 8.2 3.4L8 3a17 17 0 0 0-4.3 1.4C1 8.3.3 12.1.6 15.9a17 17 0 0 0 5.2 2.6l1.1-1.800a11 11 0 0 1-1.700-.8l.4-.3a12 12 0 0 0 10.800 0l.4.300c-.5.300-1.100.600-1.700.800l1.100 1.800a17 17 0 0 0 5.200-2.600c.4-4.400-.7-8.200-2.100-11.500ZM8.700 13.600c-1 0-1.800-.9-1.800-2s.8-2 1.800-2 1.800.9 1.800 2-.8 2-1.800 2Zm6.600 0c-1 0-1.800-.9-1.800-2s.8-2 1.800-2 1.800.9 1.800 2-.8 2-1.800 2Z"/></svg>
+        Join Discord
+      </a>
+    </div>
+  </div>
+  <div class="fbottom">
+    <span>Copyright © Vanta 2026</span>
+  </div>
+</footer>
+
+<div class="modal" id="tos-modal" role="dialog" aria-modal="true" aria-labelledby="tos-title" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="tos-title">Vanta Bot Service — Terms of Service</h2>
+      <button class="modal-x" type="button" data-close aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Agreement to Terms</h3>
+      <p>By purchasing, redeeming, or running any Vanta access key, you agree to follow these Terms of Service. If you disagree with any part of these rules, do not use our loader or software.</p>
+
+      <h3>2. License Keys &amp; Sharing</h3>
+      <p>Each access key is assigned strictly to you. Sharing, leaking, reselling, or attempting to crack or bypass key verification will result in your key being permanently blacklisted with zero refund.</p>
+
+      <h3>3. Account Safety &amp; Risks</h3>
+      <div class="tos-note warn"><b>⚠️ Play on Alt Accounts</b>
+        <p>We are not responsible for any moderation actions taken against your accounts. Always test and run Vanta on alternative accounts rather than your main.</p></div>
+
+      <h3>4. Educational &amp; Research Scope</h3>
+      <div class="tos-note info"><b>🎓 Intended Use</b>
+        <p>Vanta is built as an advanced machine learning reinforcement agent for Blox League and Turbo Soccer. Users acknowledge that running automated bots in online multiplayer titles carries inherent risks. We do not endorse breaking platform rules, and you assume 100% of the responsibility for any account restrictions or bans.</p></div>
+
+      <h3>5. All Sales Are Final</h3>
+      <p>Because keys are generated digitally and delivered instantly upon purchase, we do not offer refunds or exchanges once a key has been issued.</p>
+
+      <h3>6. Updates &amp; Downtime</h3>
+      <p>Game patches or server updates may temporarily break bot functionality. We work to push fixes as quickly as possible, but uninterrupted uptime is never guaranteed.</p>
+
+      <h3>7. Policy Updates</h3>
+      <p>We reserve the right to alter these terms whenever necessary. Continued use of Vanta means you accept any changes made.</p>
+
+      <p class="tos-date">Last Updated: October 2026</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="privacy-title" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="privacy-title">Vanta Bot Service — Privacy Policy</h2>
+      <button class="modal-x" type="button" data-close aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Information We Collect</h3>
+      <p>To handle orders and keep the service running smoothly, we only gather basic information required for checkout and verification: your contact email, connected Discord account info, and payment transaction details.</p>
+
+      <h3>2. Hardware ID (HWID) Binding</h3>
+      <p>When you launch the Vanta loader, our system reads a unique hardware identifier (HWID) from your PC. We store this securely and use it strictly to lock your access key to your specific machine, stopping unauthorized key leaks and sharing. Your HWID is never sold or handed over to third parties.</p>
+
+      <h3>3. How Your Information Is Used</h3>
+      <p>All collected data is used exclusively for verifying licenses, processing purchases, providing customer support, and granting access to the software. We do not sell, trade, or distribute your personal details.</p>
+
+      <h3>4. Data Protection &amp; Security</h3>
+      <p>We employ robust, industry-standard security protocols—including encrypted channels and secure server storage—to keep your personal information safe from unauthorized access.</p>
+
+      <h3>5. Getting in Touch</h3>
+      <p>If you have any questions or privacy concerns, reach out to our team directly via our official Discord community.</p>
+
+      <p class="tos-date">Last Updated: October 2026</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="refund-modal" role="dialog" aria-modal="true" aria-labelledby="refund-title" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="refund-title">Vanta Bot Service — Refund Policy</h2>
+      <button class="modal-x" type="button" data-close aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. All Sales Are Final</h3>
+      <p>Because our products consist of digital software access keys and instant licenses, all sales are strictly final. Once a key has been generated and delivered, we do not issue refunds or exchanges under any circumstances.</p>
+
+      <h3>2. Policy Acknowledgment</h3>
+      <p>By completing your transaction and purchasing access, you explicitly acknowledge and agree to this no-refund policy.</p>
+
+      <h3>3. Support &amp; Assistance</h3>
+      <p>Need Help? If you run into technical difficulties with your setup or have questions about how to configure and use the bot, please open a help ticket directly in our official Discord server. Our team is always here to get you sorted out!</p>
+
+      <p class="tos-date">Last Updated: October 2026</p>
+    </div>
+  </div>
+</div>
+
+<button class="top-btn" id="topBtn" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+/* =========================================================
+   EDIT ME
+   ========================================================= */
+var DISCORD_URL = "https://discord.gg/ArnHTha6yW";   // used by every Buy Now / Join Discord button
+
+/* =========================================================
+   Page switching (does not rely on hashchange)
+   ========================================================= */
+var pages = ["home","products","bots","setup","status"];
+
+function show(name){
+  if(pages.indexOf(name) < 0) name = "home";
+  pages.forEach(function(p){
+    var el = document.getElementById("page-"+p);
+    if(el) el.classList.toggle("active", p===name);
+  });
+  document.querySelectorAll("[data-nav]").forEach(function(a){
+    a.classList.toggle("active", a.getAttribute("data-nav")===name);
+  });
+  document.getElementById("links").classList.remove("open");
+  window.scrollTo(0,0);
+}
+function currentHash(){ return (location.hash || "#home").replace("#",""); }
+
+document.addEventListener("click", function(e){
+  var a = e.target.closest ? e.target.closest("a[href^='#']") : null;
+  if(!a) return;
+  var name = a.getAttribute("href").slice(1);
+  if(pages.indexOf(name) < 0) return;
+  e.preventDefault();
+  show(name);
+  try{ history.pushState(null, "", "#"+name); }catch(err){}
+});
+window.addEventListener("hashchange", function(){ show(currentHash()); });
+window.addEventListener("popstate",  function(){ show(currentHash()); });
+
+/* mobile menu */
+document.getElementById("burger").addEventListener("click", function(){
+  document.getElementById("links").classList.toggle("open");
+});
+
+/* back to top */
+var topBtn = document.getElementById("topBtn");
+window.addEventListener("scroll", function(){ topBtn.classList.toggle("show", window.scrollY > 400); });
+topBtn.addEventListener("click", function(){ window.scrollTo({top:0,behavior:"smooth"}); });
+
+/* discord links */
+document.querySelectorAll("[data-discord]").forEach(function(a){
+  a.href = DISCORD_URL; a.target = "_blank"; a.rel = "noopener";
+});
+
+/* setup tabs */
+document.querySelectorAll(".tab").forEach(function(t){
+  t.addEventListener("click", function(){
+    document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("on"); });
+    document.querySelectorAll(".tabpane").forEach(function(x){ x.classList.remove("on"); });
+    t.classList.add("on");
+    document.getElementById(t.getAttribute("data-tab")).classList.add("on");
+  });
+});
+
+/* terms of service popup */
+(function(){
+  var ids = {tos:"tos-modal", privacy:"privacy-modal", refund:"refund-modal"};
+  var lastFocus = null;
+  function allModals(){ return Object.keys(ids).map(function(k){ return document.getElementById(ids[k]); }); }
+  function open(modal){
+    lastFocus = document.activeElement;
+    modal.hidden = false; document.body.classList.add("modal-open");
+    modal.querySelector(".modal-body").scrollTop = 0;
+    modal.querySelector(".modal-x").focus();
+  }
+  function closeAll(){
+    allModals().forEach(function(m){ m.hidden = true; });
+    document.body.classList.remove("modal-open");
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest("[data-modal]") : null;
+    if(t){ e.preventDefault(); var m = document.getElementById(ids[t.getAttribute("data-modal")]); if(m) open(m); return; }
+    var openModal = allModals().find(function(m){ return !m.hidden; });
+    if(openModal && (e.target === openModal || (e.target.closest && e.target.closest("[data-close]")))) closeAll();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && allModals().some(function(m){ return !m.hidden; })) closeAll();
+  });
+})();
+
+show(currentHash());
+</script>
 </body>
 </html>
